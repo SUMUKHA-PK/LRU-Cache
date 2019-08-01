@@ -1,4 +1,11 @@
 #include<stdio.h>
-int main() {
-    
+
+typedef struct LruCache {
+    int size;
+    int array[size];
+} LruCache; 
+
+void CreateLRU() {
+    printf("Entered LRU function");
+    return;
 }
