@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<C/hash.h>
 
 // The idea of implementation of LRU cache is,
 // everytime a new object is "called", its usage
@@ -15,6 +16,7 @@
 typedef struct LruCache {
     int size;
     int *array;
+    hashtable_t* hash;
     int start,end;
 } LruCache; 
 
@@ -26,6 +28,7 @@ int getNextIndex(LruCache* cache);
 // Function implementations
 LruCache* CreateLRU(int size) {
     LruCache* cache = (LruCache*)malloc(sizeof(LruCache));
+    cache->hash = ht_create(2*size);
     cache->size = size;
     cache->start = 0;
     cache->end = -1;
@@ -36,19 +39,43 @@ LruCache* CreateLRU(int size) {
 }   
 
 // putElement adds an element on to the cache
+// Adding an element to the cache makes it the 
+// newest element in cache. This is "addressed"
+// by appending it to the end of the queue.
+// In case the current cache is completely full, 
+// it must evict the LRU element from the cache.
+// This is automatically done as, when the cache
+// is full, the LRU element would be the "next"
+// of the "end" pointer.
 void putElement(LruCache* cache, int key) {
     int index = getNextIndex(cache);
+    insertIntoHashTable(cache,key);
     cache->array[index] = key;
-    cache->end ++;
+}
+
+// getElement gets the element if it exists in the cache
+// A hash map is maintained 
+int getElement(LruCache* cache,int key) {
+    if(checkKeyInHashTable(cache,key)){
+
+    }else{
+        printf("Element doesnt exist in cache!\n");
+    }
+}
+
+// insertIntoHashTable inserts the key into the hash table
+// It is a helper function used as the "hash table insert"
+// doesnt take in integers directly
+void insertIntoHashTable(LruCache* cache, int key){
+
 }
 
 // getNextIndex returns the next empty index to enter the element to
 int getNextIndex(LruCache* cache){
-    int index;
     if(cache->end == cache->size -1){
-        return 0;
+        cache->end = 0;
     }else{
-        return cache->end + 1;
+        cache->end++;
     }
-    return index;
+    return cache->end;
 }
