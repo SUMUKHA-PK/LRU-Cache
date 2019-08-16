@@ -9,8 +9,9 @@ int main() {
     for(int i=0;i<size*2;i++){
         putElement(cache,i);
     }
-    for(int i=0;i<size;i++){
-        printf("%d ",cache->array[i]);
+    printf("\n");
+    for(int i=0;i<size*2;i++){
+        printf("%d ",getElement(cache,i));
     }
     printf("\n");
     return 0;

@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<C/hash.h>
+#include "hash.h"
+#include<stdbool.h>
 
 // The idea of implementation of LRU cache is,
 // everytime a new object is "called", its usage
@@ -13,6 +14,10 @@
 // The LRU Cache object
 // It contains the size of the cache and the
 // pointer to the first element of the cache
+// All elements are inserted at the "start"
+// index and "end" pointer "pushes" the "start"
+// pointer from behind and moves them forward
+// in a circular manner.
 typedef struct LruCache {
     int size;
     int *array;
@@ -24,6 +29,10 @@ typedef struct LruCache {
 LruCache* CreateLRU(int size);
 void putElement(LruCache* cache, int key);
 int getNextIndex(LruCache* cache);
+int getElement(LruCache* cache,int key);
+bool insertIntoHashTable(LruCache* cache, int key);
+char * getCharFromInt(int key);
+bool checkCacheForElement(LruCache* cache, char * string);
 
 // Function implementations
 LruCache* CreateLRU(int size) {
@@ -49,25 +58,44 @@ LruCache* CreateLRU(int size) {
 // of the "end" pointer.
 void putElement(LruCache* cache, int key) {
     int index = getNextIndex(cache);
-    insertIntoHashTable(cache,key);
+    bool err = insertIntoHashTable(cache,key);
+    if(!err){
+        printf("Element already exists in the cache!\n");
+        return;
+    }
     cache->array[index] = key;
+    printf("%d added to cache\n",key);
 }
 
 // getElement gets the element if it exists in the cache
-// A hash map is maintained 
+// A hash map is maintained
+// The concept of promoting an element in the cache is 
+// implemented here. The promotion is similar to the 
+// the concept of eviction in `putElement`, as it replaces
+// the LRU element in the cache. 
 int getElement(LruCache* cache,int key) {
-    if(checkKeyInHashTable(cache,key)){
+    char * string = getCharFromInt(key);
+    if(checkCacheForElement(cache,string)){
 
+        return key;
     }else{
         printf("Element doesnt exist in cache!\n");
     }
+    return -1;
 }
 
 // insertIntoHashTable inserts the key into the hash table
 // It is a helper function used as the "hash table insert"
 // doesnt take in integers directly
-void insertIntoHashTable(LruCache* cache, int key){
-
+bool insertIntoHashTable(LruCache* cache, int key){
+    char* string = getCharFromInt(key);
+    if(!checkCacheForElement(cache,string)){
+        ht_put(cache->hash,string,"");
+        return true;
+    }else{
+        return false;
+    }
+    return true;
 }
 
 // getNextIndex returns the next empty index to enter the element to
@@ -78,4 +106,20 @@ int getNextIndex(LruCache* cache){
         cache->end++;
     }
     return cache->end;
+}
+
+char* getCharFromInt(int key){
+    char * string = (char *)malloc(sizeof(char)*100);
+    sprintf(string,"%d",key);
+    return (char *)string;
+}
+
+// checkCacheForElement :
+//                          returns false if the element doesnt exist
+//                          returns true if the element is in the cache
+bool checkCacheForElement(LruCache* cache, char * string){
+    if(ht_get(cache->hash,string)==NULL){
+        return false;
+    }
+    return true;
 }
