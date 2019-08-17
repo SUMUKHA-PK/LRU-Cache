@@ -10,6 +10,8 @@
 // the LRU object, we need to maintain an order of 
 // the LRU objects so that once the LRU object is 
 // used, the next RU object becomes the LRU objects
+// The "start" pointer is always at the LRU element.
+// The "end" pointer is always at the most recent element.
 
 // The LRU Cache object
 // It contains the size of the cache and the
@@ -22,7 +24,7 @@ typedef struct LruCache {
     int size;
     int *array;
     hashtable_t* hash;
-    int start,end;
+    int start,end,full;
 } LruCache; 
 
 // Function declarations
@@ -33,14 +35,16 @@ int getElement(LruCache* cache,int key);
 bool insertIntoHashTable(LruCache* cache, int key);
 char * getCharFromInt(int key);
 bool checkCacheForElement(LruCache* cache, char * string);
+void removeElementFromCache(LruCache* cache, int key);
 
 // Function implementations
 LruCache* CreateLRU(int size) {
     LruCache* cache = (LruCache*)malloc(sizeof(LruCache));
     cache->hash = ht_create(2*size);
     cache->size = size;
-    cache->start = 0;
+    cache->start = -1;
     cache->end = -1;
+    cache->full = 0;
     int * Array = (int*)malloc(size*sizeof(int));
     cache->array = Array;
     printf("Cache of size %d created!\n",size);
@@ -53,11 +57,19 @@ LruCache* CreateLRU(int size) {
 // by appending it to the end of the queue.
 // In case the current cache is completely full, 
 // it must evict the LRU element from the cache.
-// This is automatically done as, when the cache
-// is full, the LRU element would be the "next"
-// of the "end" pointer.
+// The eviction of the LRU item happens inherently
+// as the "start" pointer is positioned at the 
+// LRU element always after a particular operation
+// (put or get) has been completed. 
 void putElement(LruCache* cache, int key) {
-    int index = getNextIndex(cache);
+    int index = getNextIndex(cache);    
+    if(index == cache->size-1){
+        cache->full = 1;
+    }
+    if (cache->full==1){
+        int currElement = cache->array[index];
+        removeElementFromCache(cache,currElement);
+    }
     bool err = insertIntoHashTable(cache,key);
     if(!err){
         printf("Element already exists in the cache!\n");
@@ -98,14 +110,33 @@ bool insertIntoHashTable(LruCache* cache, int key){
     return true;
 }
 
-// getNextIndex returns the next empty index to enter the element to
+// getNextIndex returns the place of insertion of 
+// next element to the cache. It always is the point
+// where "cache->start" exists or is "wished/hoped" 
+// to exist. This function always positions the "start"
+// pointer to the desired position.
 int getNextIndex(LruCache* cache){
-    if(cache->end == cache->size -1){
-        cache->end = 0;
+    // Wrap around condition
+    if(cache->start == cache->size -1){
+        cache->start = 0;
+        cache->end = cache->size-1;
     }else{
-        cache->end++;
+        // If its the first operation of the cache,
+        // only the "start" pointer must move.
+        if(cache->start==0&&cache->end==0){
+            cache->end --;
+        }
+        // Since there is no wrap around, the 
+        // pointer normally moves forward.
+        cache->start++;
+        // Checking for wrap around of the "end" pointer
+        if(cache->end == cache->size -1){
+            cache->end = 0;
+        }else{
+            cache->end ++;
+        }
     }
-    return cache->end;
+    return cache->start;
 }
 
 char* getCharFromInt(int key){
@@ -122,4 +153,10 @@ bool checkCacheForElement(LruCache* cache, char * string){
         return false;
     }
     return true;
+}
+
+void removeElementFromCache(LruCache* cache, int key){
+    char* string = getCharFromInt(key);
+    ht_remove(cache->hash,string); 
+    printf("%d evicted from cache!\n",key);
 }
