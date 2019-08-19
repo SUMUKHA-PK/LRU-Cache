@@ -14,12 +14,15 @@ int main() {
         putElement(cache,i);
         printCacheCharacteristics(cache);
     }
-    // printf("\nInserting done\n\n");
+    printf("\nInserting done\n\n");
     // // for(int i=0;i<size*2;i++){
-    //     printf("%d ",getElement(cache,7));
-    //     printCacheCharacteristics(cache);
-    //     printf("%d ",getElement(cache,9));
-    //     printCacheCharacteristics(cache);
+        printf("%d ",getElement(cache,12));
+        printCacheCharacteristics(cache);
+        putElement(cache,13);
+        printCacheCharacteristics(cache);
+        
+        printf("%d ",getElement(cache,2));
+        printCacheCharacteristics(cache);
     //     printf("%d ",getElement(cache,8));
     //     printCacheCharacteristics(cache);
     //     printf("%d ",getElement(cache,7));
@@ -38,16 +41,10 @@ int main() {
 void printCacheCharacteristics(LruCache* cache){
     printf("\n\nCache:\n\t");
     printDLL(cache->head);
-    if(cache->start!=NULL){
-        printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",cache->start->key,cache->start->key,cache->full);
+    if(cache->start!=NULL&&cache->end!=NULL){
+        printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",cache->start->key,cache->end->key,cache->full);
     }else{
         printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",-1,-1,cache->full);
     }
     printf("\n\n-------------------------------------\n\n");
 }
-
-
-// Problems existing
-
-// When I evict the element from the cache, I need to make sure the capacity is maintained full
-// by putting the element that existed in its place 
