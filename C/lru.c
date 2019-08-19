@@ -35,7 +35,7 @@ int getElement(LruCache* cache,int key);
 bool insertIntoHashTable(LruCache* cache, int key);
 char * getCharFromInt(int key);
 bool checkCacheForElement(LruCache* cache, char * string);
-void removeElementFromCache(LruCache* cache, int key);
+void removeElementFromHashTable(LruCache* cache, int key);
 
 // Function implementations
 LruCache* CreateLRU(int size) {
@@ -68,7 +68,7 @@ void putElement(LruCache* cache, int key) {
     }
     if (cache->full==1){
         int currElement = cache->array[index];
-        removeElementFromCache(cache,currElement);
+        removeElementFromHashTable(cache,currElement);
     }
     bool err = insertIntoHashTable(cache,key);
     if(!err){
@@ -88,7 +88,10 @@ void putElement(LruCache* cache, int key) {
 int getElement(LruCache* cache,int key) {
     char * string = getCharFromInt(key);
     if(checkCacheForElement(cache,string)){
-
+        // call Put Element Here
+        removeElementFromHashTable(cache,key);
+        putElement(cache,key);
+        insertIntoHashTable(cache,key);
         return key;
     }else{
         printf("Element doesnt exist in cache!\n");
@@ -155,7 +158,7 @@ bool checkCacheForElement(LruCache* cache, char * string){
     return true;
 }
 
-void removeElementFromCache(LruCache* cache, int key){
+void removeElementFromHashTable(LruCache* cache, int key){
     char* string = getCharFromInt(key);
     ht_remove(cache->hash,string); 
     printf("%d evicted from cache!\n",key);
