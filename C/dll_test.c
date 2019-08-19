@@ -1,10 +1,6 @@
 #include<stdio.h>
-#include "linkedList.c"
-
-void printDLL(Node * head);
-void printDLLRL(Node * head);
-void print(Node * head);   
-
+#include "linkedList.h"
+  
 int main(){
     Node* head = createDLL(0);
 
@@ -25,27 +21,3 @@ int main(){
     return 0;
 }
 
-void print(Node * head){
-    printDLL(head);
-    printDLLRL(head);
-}
-void printDLL(Node * head){
-    while(head!=NULL){
-        printf("%d -> ",head->key);
-        head=head->right;
-    }
-    printf(" NULL\n");
-}
-
-void printDLLRL(Node * head){
-    while(head->right!=NULL){
-        head = head->right;
-    }
-
-    printf("NULL");
-    while(head!=NULL){
-        printf(" <-%d",head->key);
-        head = head->left;
-    }
-    printf("\n");
-}

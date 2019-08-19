@@ -1,6 +1,9 @@
 // Following is the implementation of a 
 // Doubly Linked List(DLL) in C.
 
+#ifndef DLL
+#define DLL
+
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -18,6 +21,9 @@ Node * createDLL(int headKeyVal);
 Node * insertNodeToLeft(Node ** head, Node * node, int keyToInsert);
 Node * insertNodeToRight(Node * node, int keyToInsert);
 void deleteNode(Node ** head, Node * node);
+void printDLL(Node * head);
+void printDLLRL(Node * head);
+void print(Node * head); 
 
 // Function implementations
 
@@ -135,3 +141,30 @@ void deleteNode(Node ** head, Node * node){
     }
     free(node);
 }
+
+void print(Node * head){
+    printDLL(head);
+    printDLLRL(head);
+}
+void printDLL(Node * head){
+    while(head!=NULL){
+        printf("%d -> ",head->key);
+        head=head->right;
+    }
+    printf(" NULL\n");
+}
+
+void printDLLRL(Node * head){
+    while(head->right!=NULL){
+        head = head->right;
+    }
+
+    printf("NULL");
+    while(head!=NULL){
+        printf(" <-%d",head->key);
+        head = head->left;
+    }
+    printf("\n");
+}
+
+#endif

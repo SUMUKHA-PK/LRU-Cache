@@ -1,7 +1,9 @@
 // Test file includes a few basic tests for the LRU cache
 // This file uses the library of functions for using an LRU cache
+
 #include<stdio.h> 
 #include "lru.c" 
+#include "linkedList.h"
 
 void printCacheCharacteristics(LruCache* cache);
 
@@ -12,33 +14,31 @@ int main() {
         putElement(cache,i);
         printCacheCharacteristics(cache);
     }
-    printf("\nInserting done\n\n");
-    // for(int i=0;i<size*2;i++){
-        printf("%d ",getElement(cache,7));
-        printCacheCharacteristics(cache);
-        printf("%d ",getElement(cache,9));
-        printCacheCharacteristics(cache);
-        printf("%d ",getElement(cache,8));
-        printCacheCharacteristics(cache);
-        printf("%d ",getElement(cache,7));
-        printCacheCharacteristics(cache);
-        printf("%d ",getElement(cache,8));
-        printCacheCharacteristics(cache);
-        printf("%d ",getElement(cache,9));
-        printCacheCharacteristics(cache);
-        printf("%d ",getElement(cache,8));
-        printCacheCharacteristics(cache);
-    // }
-    printf("\n");
+    // printf("\nInserting done\n\n");
+    // // for(int i=0;i<size*2;i++){
+    //     printf("%d ",getElement(cache,7));
+    //     printCacheCharacteristics(cache);
+    //     printf("%d ",getElement(cache,9));
+    //     printCacheCharacteristics(cache);
+    //     printf("%d ",getElement(cache,8));
+    //     printCacheCharacteristics(cache);
+    //     printf("%d ",getElement(cache,7));
+    //     printCacheCharacteristics(cache);
+    //     printf("%d ",getElement(cache,8));
+    //     printCacheCharacteristics(cache);
+    //     printf("%d ",getElement(cache,9));
+    //     printCacheCharacteristics(cache);
+    //     printf("%d ",getElement(cache,8));
+    //     printCacheCharacteristics(cache);
+    // // }
+    printf("Complete!\n");
     return 0;
 }
 
 void printCacheCharacteristics(LruCache* cache){
     printf("\n\nCache:\n\t");
-    for(int i=0;i<cache->size;i++){
-        printf("%d ",cache->array[i]);
-    }
-    printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",cache->start,cache->end,cache->full);
+    printDLL(cache->head);
+    printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",cache->start->key,cache->start->key,cache->full);
     printf("\n\n-------------------------------------\n\n");
 }
 
