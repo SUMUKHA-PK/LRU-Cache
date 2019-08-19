@@ -17,7 +17,7 @@ Node * createNode();
 Node * createDLL(int headKeyVal);
 Node * insertNodeToLeft(Node ** head, Node * node, int keyToInsert);
 Node * insertNodeToRight(Node * node, int keyToInsert);
-
+void deleteNode(Node ** head, Node * node);
 
 // Function implementations
 
@@ -63,6 +63,7 @@ Node * insertNodeToLeft(Node ** head, Node * node, int keyToInsert){
     }
     // if ->left is not NULL
     Node * newNode = createNode();
+    newNode->key = keyToInsert;
     Node * leftNode = node ->left;
     
     newNode->left = leftNode;
@@ -71,13 +72,61 @@ Node * insertNodeToLeft(Node ** head, Node * node, int keyToInsert){
     node->left = newNode;
     newNode->right = node;
 
-    printf("%d\n",node->left->key);
     return node;
 }
-
 
 Node * insertNodeToRight(Node * node, int keyToInsert){
     if(node==NULL){
         return createDLL(keyToInsert);
     }
+    // cases to consider are "node->right"
+    // being NULL and not NULL
+    if(node->right==NULL){
+        Node * newNode = createNode();
+        node->right = newNode;
+        newNode ->left = node;
+        newNode->key = keyToInsert;
+        return node;
+    }
+    // If ->right is not NULL
+    Node * newNode = createNode();
+    newNode->key = keyToInsert;
+    Node * rightNode = node->right;
+
+    newNode->right = rightNode;
+    rightNode->left = newNode;
+
+    node->right = newNode;
+    newNode->left = node;
+    
+    return node;
+}
+
+void deleteNode(Node ** head, Node * node){
+    if(node==NULL){
+        printf("Can't delete node, node is NULL\n");
+        return;
+    }
+    Node * leftNode = node->left;
+    Node * rightNode = node->right;
+
+    if(*head==node){
+        if(rightNode!=NULL){
+            *head = rightNode;
+        }else{
+            *head = NULL;
+        }
+    }
+    // 4 cases
+    if(leftNode!=NULL){
+        leftNode->right = rightNode;
+        if(rightNode!=NULL){
+            rightNode->left = leftNode;
+        }
+    }else{
+        if(rightNode!=NULL){
+            rightNode->left = NULL;
+        }
+    }
+    free(node);
 }
