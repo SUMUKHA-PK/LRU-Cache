@@ -36,7 +36,7 @@ LruCache* CreateLRU(int size);
 void putElement(LruCache* cache, int key);
 int getNextIndex(LruCache* cache);
 int getElement(LruCache* cache,int key);
-bool insertIntoHashTable(LruCache* cache, int key);
+bool insertIntoHashTable(LruCache* cache, int key, void * data);
 char * getCharFromInt(int key);
 bool checkCacheForElement(LruCache* cache, char * string);
 void removeElementFromHashTable(LruCache* cache, int key);
@@ -65,86 +65,121 @@ LruCache* CreateLRU(int size) {
 // as the "start" pointer is positioned at the 
 // LRU element always after a particular operation
 // (put or get) has been completed. 
+// There are 2 cases of the condition of the cache.
+// Full or not full, each of these cases must be 
+// handled separately as, if the cache is not full,
+// continuous appending to the end of the list is 
+// permissive. 
 void putElement(LruCache* cache, int key) {
+    // The policy here will be insert at "right" of
+    // start. 
+    bool err;
     if(cache->full==0){
         if(cache->head==NULL){
             cache->head = insertNodeToRight(cache->head,key);
+            err = insertIntoHashTable(cache,key,cache->head);
+            if(err){
+                printf("Key: %d inserted into the hash table.\n", key);
+            }else{
+                printf("Key: %d already exists in the cache!\n",key);
+            }
             cache->start = cache->head;
         }else{
             cache->start = insertNodeToRight(cache->start,key);
+            err = insertIntoHashTable(cache,key,cache->start->right);
+            if(err){
+                printf("Key: %d inserted into the hash table.\n", key);
+            }else{
+                printf("Key: %d already exists in the cache!\n",key);
+            }
             cache->start = cache->start->right;
         }
         cache->count++;
         if(cache->count==cache->size){
             cache->full = 1;
+            cache->start = cache->head;
         }
+        // The policy here will be changed to insert AT
+        // cache->start. That means, insert to right of 
+        // start and delete that node.
     }else{
-        // If it is impending to come to head
-        // it has to remove head and insert to
-        // head. 
-        if(cache->start->right==NULL){
+        // If it is the end of the DLL, reposition the
+        // start to the head of the DLL.
+        if(cache->start==NULL){
             cache->start = cache->head;
-            cache->start = insertNodeToRight(cache->start,key);
-            deleteNode(&cache->head,cache->start);
-            cache->start = cache->head;
-            cache->start = cache->start->right;
-        }else{
-            cache->start = insertNodeToRight(cache->start,key);
-            Node * node = cache->start->right;
-            deleteNode(&cache->head,cache->start);
-            cache->start = node->right;
         }
+        cache->start = insertNodeToRight(cache->start,key);
+        err = insertIntoHashTable(cache,key,cache->start->right);
+        if(err){
+            printf("Key: %d inserted into the hash table.\n", key);
+        }else{
+            printf("Key: %d already exists in the cache!\n",key);
+        }
+        Node * node = cache->start->right;
+        deleteNode(&cache->head,cache->start);
+        removeElementFromHashTable(cache,cache->start->key);
+        cache->start = node->right;
     }
-    // int index = getNextIndex(cache);    
-    // if(index == cache->size-1){
-    //     cache->full = 1;
-    // }
-    // if (cache->full==1){
-    //     int currElement = cache->head[index];
-    //     removeElementFromHashTable(cache,currElement);
-    // }
-    // bool err = insertIntoHashTable(cache,key);
-    // if(!err){
-    //     printf("Element already exists in the cache!\n");
-    //     return;
-    // }
-    // cache->head[index] = key;
-    // printf("%d added to cache\n",key);
+    if(err){
+        printf("Key: %d inserted into the cache.\n",key);
+    }
 }
 
-// // getElement gets the element if it exists in the cache
-// // A hash map is maintained
-// // The concept of promoting an element in the cache is 
-// // implemented here. The promotion is similar to the 
-// // the concept of eviction in `putElement`, as it replaces
-// // the LRU element in the cache. 
-// int getElement(LruCache* cache,int key) {
-//     char * string = getCharFromInt(key);
-//     if(checkCacheForElement(cache,string)){
-//         // call Put Element Here
-//         removeElementFromHashTable(cache,key);
-//         putElement(cache,key);
-//         insertIntoHashTable(cache,key);
-//         return key;
-//     }else{
-//         printf("Element doesnt exist in cache!\n");
-//     }
-//     return -1;
-// }
+// getElement gets the element if it exists in the cache
+// A hash map is maintained
+// The concept of promoting an element in the cache is 
+// implemented here. The promotion is similar to the 
+// the concept of eviction in `putElement`, as it replaces
+// the LRU element in the cache. 
+int getElement(LruCache* cache,int key) {
+    char * string = getCharFromInt(key);
+    if(checkCacheForElement(cache,string)){
+        // call Put Element Here
+        removeElementFromHashTable(cache,key);
+        putElement(cache,key);
+        insertIntoHashTable(cache,key);
+        return key;
+    }else{
+        printf("Element doesnt exist in cache!\n");
+    }
+    return -1;
+}
 
-// // insertIntoHashTable inserts the key into the hash table
-// // It is a helper function used as the "hash table insert"
-// // doesnt take in integers directly
-// bool insertIntoHashTable(LruCache* cache, int key){
-//     char* string = getCharFromInt(key);
-//     if(!checkCacheForElement(cache,string)){
-//         ht_put(cache->hash,string,"");
-//         return true;
-//     }else{
-//         return false;
-//     }
-//     return true;
-// }
+// insertIntoHashTable inserts the key into the hash table
+// It is a helper function used as the "hash table insert"
+// doesnt take in integers directly
+bool insertIntoHashTable(LruCache* cache, int key, void * data){
+    char* string = getCharFromInt(key);
+    if(!checkCacheForElement(cache,string)){
+        ht_put(cache->hash,string,data);
+        return true;
+    }else{
+        return false;
+    }
+    return true;
+}
+
+char* getCharFromInt(int key){
+    char * string = (char *)malloc(sizeof(char)*100);
+    sprintf(string,"%d",key);
+    return (char *)string;
+}
+
+// checkCacheForElement :
+//                          returns false if the element doesnt exist
+//                          returns true if the element is in the cache
+bool checkCacheForElement(LruCache* cache, char * string){
+    if(ht_get(cache->hash,string)==NULL){
+        return false;
+    }
+    return true;
+}
+
+void removeElementFromHashTable(LruCache* cache, int key){
+    char* string = getCharFromInt(key);
+    ht_remove(cache->hash,string); 
+    printf("%d evicted from cache!\n",key);
+}
 
 // // getNextIndex returns the place of insertion of 
 // // next element to the cache. It always is the point
@@ -173,26 +208,4 @@ void putElement(LruCache* cache, int key) {
 //         }
 //     }
 //     return cache->start;
-// }
-
-// char* getCharFromInt(int key){
-//     char * string = (char *)malloc(sizeof(char)*100);
-//     sprintf(string,"%d",key);
-//     return (char *)string;
-// }
-
-// // checkCacheForElement :
-// //                          returns false if the element doesnt exist
-// //                          returns true if the element is in the cache
-// bool checkCacheForElement(LruCache* cache, char * string){
-//     if(ht_get(cache->hash,string)==NULL){
-//         return false;
-//     }
-//     return true;
-// }
-
-// void removeElementFromHashTable(LruCache* cache, int key){
-//     char* string = getCharFromInt(key);
-//     ht_remove(cache->hash,string); 
-//     printf("%d evicted from cache!\n",key);
 // }

@@ -10,7 +10,7 @@ void printCacheCharacteristics(LruCache* cache);
 int main() {
     int size = 5;
     LruCache* cache = CreateLRU(size);
-    for(int i=0;i<size*2;i++){
+    for(int i=0;i<size*3-2;i++){
         putElement(cache,i);
         printCacheCharacteristics(cache);
     }
@@ -38,7 +38,11 @@ int main() {
 void printCacheCharacteristics(LruCache* cache){
     printf("\n\nCache:\n\t");
     printDLL(cache->head);
-    printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",cache->start->key,cache->start->key,cache->full);
+    if(cache->start!=NULL){
+        printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",cache->start->key,cache->start->key,cache->full);
+    }else{
+        printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",-1,-1,cache->full);
+    }
     printf("\n\n-------------------------------------\n\n");
 }
 
