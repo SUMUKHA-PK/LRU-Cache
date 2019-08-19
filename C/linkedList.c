@@ -75,6 +75,8 @@ Node * insertNodeToLeft(Node ** head, Node * node, int keyToInsert){
     return node;
 }
 
+// insertNodeToRight inserts a NEW NODE with key 
+// "keyToInsert" to the right of the node "node".
 Node * insertNodeToRight(Node * node, int keyToInsert){
     if(node==NULL){
         return createDLL(keyToInsert);
@@ -102,6 +104,9 @@ Node * insertNodeToRight(Node * node, int keyToInsert){
     return node;
 }
 
+// deleteNode deletes the node "node"
+// "*head" is a parameter to ensure deletion 
+// of head nodes
 void deleteNode(Node ** head, Node * node){
     if(node==NULL){
         printf("Can't delete node, node is NULL\n");
