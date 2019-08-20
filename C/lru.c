@@ -144,15 +144,16 @@ void putElement(LruCache* cache, int key) {
 int getElement(LruCache* cache,int key) {
     char * string = getCharFromInt(key);
     if(checkCacheForElement(cache,string)){
-        // Remove the element from its old position
-        Node * nodeOfKey = getElementFromHashTable(cache,key);
-        deleteNode(&cache->head,nodeOfKey);
-        removeElementFromHashTable(cache,key);
-
-        // promote the node to the MRU location
-        cache->end = insertNodeToRight(cache->end,key);
-        cache->end = cache->end->right;
-        insertIntoHashTable(cache,key,cache->end);
+        // Do the operation of changing the priority
+        // only if the current postion is not the 
+        // position of the key.
+        if(cache->start->key!=key){
+            // Remove the element from its old position
+            Node * nodeOfKey = getElementFromHashTable(cache,key);
+            deleteNode(&cache->head,nodeOfKey);
+            // promote the node to the MRU location
+            cache->start = insertNodeToLeft(&cache->head,cache->start,key);
+        }
         return key;
     }else{
         printf("Element doesnt exist in cache!\n");

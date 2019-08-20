@@ -10,18 +10,18 @@ void printCacheCharacteristics(LruCache* cache);
 int main() {
     int size = 5;
     LruCache* cache = CreateLRU(size);
-    for(int i=0;i<size*3-2;i++){
+    for(int i=0;i<size*2-3;i++){
         putElement(cache,i);
         printCacheCharacteristics(cache);
     }
     printf("\nInserting done\n\n");
     // // for(int i=0;i<size*2;i++){
-        printf("%d ",getElement(cache,12));
+        printf("%d ",getElement(cache,4));
         printCacheCharacteristics(cache);
         putElement(cache,13);
         printCacheCharacteristics(cache);
         
-        printf("%d ",getElement(cache,2));
+        printf("%d ",getElement(cache,3));
         printCacheCharacteristics(cache);
     //     printf("%d ",getElement(cache,8));
     //     printCacheCharacteristics(cache);
