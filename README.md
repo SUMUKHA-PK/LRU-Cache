@@ -1,5 +1,11 @@
 # Implementations of LRU Cache
 
+* Completion checklist :
+ - [x] C
+ - [ ] C++
+ - [ ] Go
+ - [ ] JAVA
+ 
 * C implementation is complete and checked with the LRU Cache problem on Leetcode. 
 (C implementation was done in order to re-familirise myself with C and to "go back to the basics")
 
