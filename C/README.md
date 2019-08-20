@@ -1,5 +1,6 @@
 # Implementation of LRU Cache in C
 
+IMPLEMENTATION IS COMPLETE AND TESTED FOR FUNCTIONALITY.
 
 * Clear and well documented code.
 * Easy less dependency support.
@@ -11,3 +12,6 @@
  * linkedList.h - Is the implementation of the DLL with all necessary functions for the LRU Cache.
  * lru.c - Is the implementation of the LRU Cache (probably must be .h) with all its functions.
  * lru_test - Is the an informal functionality test of the LRU Cache. 
+
+
+
