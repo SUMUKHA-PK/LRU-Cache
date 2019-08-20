@@ -72,8 +72,7 @@ LruCache* CreateLRU(int size) {
 // continuous appending to the end of the list is 
 // permissive. 
 void putElement(LruCache* cache, int key) {
-    // The policy here will be insert at "right" of
-    // start. 
+    // The policy here will be insert at "right" of start. 
     bool err;
     if(cache->full==0){
         if(cache->head==NULL){
@@ -154,6 +153,16 @@ int getElement(LruCache* cache,int key) {
             // promote the node to the MRU location
             cache->start = insertNodeToLeft(&cache->head,cache->start,key);
         }
+        // If the "cache->start" landed on the actual
+        // key of the query, we need to move the pointer
+        // to the next space in order to proceed.
+        else{
+            if(cache->start->right!=NULL){
+                cache->start = cache->start->right;
+            }else{
+                cache->start = cache->head;
+            }
+        }
         return key;
     }else{
         printf("Element doesnt exist in cache!\n");
@@ -201,31 +210,3 @@ Node * getElementFromHashTable(LruCache * cache, int key){
     Node * node = ht_get(cache->hash,string);
     return node;
 }
-// // getNextIndex returns the place of insertion of 
-// // next element to the cache. It always is the point
-// // where "cache->start" exists or is "wished/hoped" 
-// // to exist. This function always positions the "start"
-// // pointer to the desired position.
-// int getNextIndex(LruCache* cache){
-//     // Wrap around condition
-//     if(cache->start == cache->size -1){
-//         cache->start = 0;
-//         cache->end = cache->size-1;
-//     }else{
-//         // If its the first operation of the cache,
-//         // only the "start" pointer must move.
-//         if(cache->start==0&&cache->end==0){
-//             cache->end --;
-//         }
-//         // Since there is no wrap around, the 
-//         // pointer normally moves forward.
-//         cache->start++;
-//         // Checking for wrap around of the "end" pointer
-//         if(cache->end == cache->size -1){
-//             cache->end = 0;
-//         }else{
-//             cache->end ++;
-//         }
-//     }
-//     return cache->start;
-// }
