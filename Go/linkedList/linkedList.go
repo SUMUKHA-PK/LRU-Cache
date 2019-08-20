@@ -7,9 +7,9 @@ import (
 
 // Node is the structure of a single node
 type Node struct {
-	left  *Node
-	right *Node
-	key   int
+	Left  *Node
+	Right *Node
+	Key   int
 }
 
 // CreateNode returns a newly created node

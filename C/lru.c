@@ -17,9 +17,7 @@
 // It contains the size of the cache and the
 // pointer to the first element of the cache
 // All elements are inserted at the "start"
-// index and "end" pointer "pushes" the "start"
-// pointer from behind and moves them forward
-// in a circular manner.
+// index and it moves on in a circular manner.
 typedef struct LruCache {
     int size, count;
     Node * head;
