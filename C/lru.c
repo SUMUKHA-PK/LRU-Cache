@@ -12,8 +12,6 @@
 // the LRU object, we need to maintain an order of 
 // the LRU objects so that once the LRU object is 
 // used, the next RU object becomes the LRU objects
-// The "start" pointer is always at the LRU element.
-// The "end" pointer is always at the most recent element.
 
 // The LRU Cache object
 // It contains the size of the cache and the
@@ -27,7 +25,6 @@ typedef struct LruCache {
     Node * head;
     hashtable_t* hash;
     Node * start;
-    Node * end;
     int full;
 } LruCache; 
 
@@ -47,11 +44,10 @@ LruCache* CreateLRU(int size) {
     LruCache* cache = (LruCache*)malloc(sizeof(LruCache));
     cache->hash = ht_create(2*size);
     cache->size = size;
-    cache->count = 0;
     cache->start = NULL;
-    cache->end = NULL;
-    cache->full = 0;
     cache->head = NULL;
+    cache->count = 0;
+    cache->full = 0;
     printf("Cache of size %d created!\n",size);
     return cache;
 }   
@@ -97,7 +93,6 @@ void putElement(LruCache* cache, int key) {
         cache->count++;
         if(cache->count==cache->size){
             cache->full = 1;
-            cache->end = cache->start;
             cache->start = cache->head;
         }
         // The policy here will be changed to insert AT
@@ -118,9 +113,6 @@ void putElement(LruCache* cache, int key) {
         }
         
         Node * node = cache->start->right;
-        if(node->right==NULL){
-            cache->end = node;
-        }
         deleteNode(&cache->head,cache->start);
         removeElementFromHashTable(cache,cache->start->key);
         cache->start = node->right;
@@ -163,6 +155,7 @@ int getElement(LruCache* cache,int key) {
                 cache->start = cache->head;
             }
         }
+        printf("Key: %d retrieved from the cache\n",key);
         return key;
     }else{
         printf("Element doesnt exist in cache!\n");

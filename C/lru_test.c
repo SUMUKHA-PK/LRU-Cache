@@ -40,10 +40,10 @@ int main() {
 void printCacheCharacteristics(LruCache* cache){
     printf("\n\nCache:\n\t");
     printDLL(cache->head);
-    if(cache->start!=NULL&&cache->end!=NULL){
-        printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",cache->start->key,cache->end->key,cache->full);
+    if(cache->start!=NULL){
+        printf("\n\nStart: %d\nFull? : %d\n",cache->start->key,cache->full);
     }else{
-        printf("\n\nStart: %d\nEnd: %d\nFull? : %d\n",-1,-1,cache->full);
+        printf("\n\nStart: %d\nFull? : %d\n",-1,cache->full);
     }
     printf("\n\n-------------------------------------\n\n");
 }
