@@ -3,7 +3,7 @@
 * Completion checklist :
  - [x] C
  - [ ] C++
- - [ ] Go
+ - [ ] Go (In progress)
  - [ ] JAVA
  
 * C implementation is complete and checked with the LRU Cache problem on Leetcode. 
