@@ -1,5 +1,7 @@
 # Implementations of LRU Cache
 
+LRU - Least Recently Used. 
+
 * Completion checklist :
  - [x] C
  - [ ] C++
