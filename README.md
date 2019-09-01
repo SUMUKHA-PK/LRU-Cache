@@ -5,8 +5,8 @@ LRU - Least Recently Used.
 * Completion checklist :
  - [x] C
  - [ ] C++
- - [ ] Go (In progress)
- - [ ] JAVA
+ - [x] Go 
+ - [ ] JAVA (In progress)
  
 * C implementation is complete and checked with the LRU Cache problem on Leetcode. 
 (C implementation was done in order to re-familirise myself with C and to "go back to the basics")
