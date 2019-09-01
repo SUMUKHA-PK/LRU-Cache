@@ -15,75 +15,75 @@ type Node struct {
 // CreateNode returns a newly created node
 func CreateNode() *Node {
 	return &Node{
-		left:  nil,
-		right: nil,
-		key:   -1,
+		Left:  nil,
+		Right: nil,
+		Key:   -1,
 	}
 }
 
-// InsertNodeToLeft inserts a NEW NODE with key
-// "keyToInsert" to the left of the node "node"
-func InsertNodeToLeft(head **Node, node *Node, keyToInsert int) *Node {
+// InsertNodeToLeft inserts a NEW NODE with Key
+// "KeyToInsert" to the Left of the node "node"
+func InsertNodeToLeft(head **Node, node *Node, KeyToInsert int) *Node {
 	if node == nil {
 		log.Println("The given node was NULL, a new DLL is created and returned.")
 		newNode := CreateNode()
-		newNode.key = keyToInsert
+		newNode.Key = KeyToInsert
 		return newNode
 	}
-	// cases to consider are "node->left"
+	// cases to consider are "node->Left"
 	// being nil and not nil
-	if node.left == nil {
+	if node.Left == nil {
 		newNode := CreateNode()
-		node.left = newNode
-		newNode.right = node
-		newNode.key = keyToInsert
+		node.Left = newNode
+		newNode.Right = node
+		newNode.Key = KeyToInsert
 		if *head == node {
 			*head = newNode
 			return newNode
 		}
 	}
-	// if ".left" is not nil
+	// if ".Left" is not nil
 	newNode := CreateNode()
-	newNode.key = keyToInsert
-	leftNode := node.left
+	newNode.Key = KeyToInsert
+	LeftNode := node.Left
 
-	newNode.left = leftNode
-	leftNode.right = newNode
+	newNode.Left = LeftNode
+	LeftNode.Right = newNode
 
-	node.left = newNode
-	newNode.right = node
+	node.Left = newNode
+	newNode.Right = node
 
 	return node
 }
 
-// InsertNodeToRight inserts a NEW NODE with key
-// "keyToInsert" to the right of the node "node"
-func InsertNodeToRight(node *Node, keyToInsert int) *Node {
+// InsertNodeToRight inserts a NEW NODE with Key
+// "KeyToInsert" to the Right of the node "node"
+func InsertNodeToRight(node *Node, KeyToInsert int) *Node {
 	if node == nil {
 		log.Println("The given node was NULL, a new DLL is created and returned.")
 		newNode := CreateNode()
-		newNode.key = keyToInsert
+		newNode.Key = KeyToInsert
 		return newNode
 	}
-	// cases to consider are "node->right"
+	// cases to consider are "node->Right"
 	// being nil and not nil
-	if node.right == nil {
+	if node.Right == nil {
 		newNode := CreateNode()
-		node.right = newNode
-		newNode.left = node
-		newNode.key = keyToInsert
+		node.Right = newNode
+		newNode.Left = node
+		newNode.Key = KeyToInsert
 		return node
 	}
-	// if ".right" is not nil
+	// if ".Right" is not nil
 	newNode := CreateNode()
-	newNode.key = keyToInsert
-	rightNode := node.right
+	newNode.Key = KeyToInsert
+	RightNode := node.Right
 
-	newNode.right = rightNode
-	rightNode.left = newNode
+	newNode.Right = RightNode
+	RightNode.Left = newNode
 
-	node.right = newNode
-	newNode.left = node
+	node.Right = newNode
+	newNode.Left = node
 
 	return node
 }
@@ -95,25 +95,25 @@ func DeleteNode(head **Node, node *Node) {
 		return
 	}
 
-	leftNode := node.left
-	rightNode := node.right
+	LeftNode := node.Left
+	RightNode := node.Right
 
 	if *head == node {
-		if rightNode != nil {
-			*head = rightNode
+		if RightNode != nil {
+			*head = RightNode
 		} else {
 			*head = nil
 		}
 	}
 
-	if leftNode != nil {
-		leftNode.right = rightNode
-		if rightNode != nil {
-			rightNode.left = leftNode
+	if LeftNode != nil {
+		LeftNode.Right = RightNode
+		if RightNode != nil {
+			RightNode.Left = LeftNode
 		}
 	} else {
-		if rightNode != nil {
-			rightNode.left = nil
+		if RightNode != nil {
+			RightNode.Left = nil
 		}
 	}
 }
@@ -124,8 +124,8 @@ func PrintDLL(head *Node) {
 		if head == nil {
 			break
 		}
-		fmt.Printf("%d-> ", head.key)
-		head = head.right
+		fmt.Printf("%d-> ", head.Key)
+		head = head.Right
 	}
 	fmt.Println("NULL")
 }
